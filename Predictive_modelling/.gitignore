@@ -1,0 +1,7 @@
+.pixi/
+__pycache__/
+.Rhistory
+.DS_Store
+output/
+data/
+*.pyc
