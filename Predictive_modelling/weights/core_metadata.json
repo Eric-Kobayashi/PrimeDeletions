@@ -1,0 +1,31 @@
+{
+  "features": [
+    "percGC_pbs",
+    "DeepCas9",
+    "pridict2_score_mS_HEK",
+    "length_mS_DPr04",
+    "MCC_mS_coverage_bin1000"
+  ],
+  "categories": {},
+  "target": "L2FC",
+  "model_parameters": {
+    "n_estimators": 400,
+    "max_depth": 6,
+    "learning_rate": 0.05,
+    "colsample_bytree": 0.8,
+    "subsample": 0.8,
+    "gamma": 0.1,
+    "objective": "reg:squarederror",
+    "enable_categorical": true
+  },
+  "python": "3.8.20",
+  "package_versions": {
+    "numpy": "1.24.4",
+    "pandas": "2.0.3",
+    "xgboost": "2.0.3"
+  },
+  "train_sha256": "c66b665f7ddef5497418d1cb0677d03859f272a7a1e0133614ed41cde657f4b0",
+  "test_sha256": "60e8616cc5fa788a6714554381ffe70b7f63574899b1d22bcd92c29d00105dea",
+  "model_sha256": "91789bebb377419575303c036cc45381fb1dd5461b8fbb266baf566e5c579289",
+  "training_scope": "archived training split only"
+}

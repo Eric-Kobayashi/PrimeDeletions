@@ -1,6 +1,6 @@
 # Run from any working directory: pixi run reproduce --data-dir PATH [--model PATH].
 args <- commandArgs(trailingOnly=TRUE)
-usage <- paste("Usage: pixi run reproduce --data-dir PATH [--model SAVED_MODEL.json]",
+usage <- paste("Usage: pixi run reproduce --data-dir PATH [--model SAVED_MODEL.json | --refit]",
                "[--reference ARCHIVED_PREDICTIONS.csv] [--output PATH] [--figures-only]")
 if ("--help" %in% args || "-h" %in% args) { cat(usage,"\n"); quit(status=0) }
 get_arg <- function(name, default=NULL) {
@@ -10,7 +10,7 @@ get_arg <- function(name, default=NULL) {
     stop("Missing or repeated value for ",name)
   args[idx+1]
 }
-allowed <- c("--data-dir","--output","--model","--reference","--figures-only")
+allowed <- c("--data-dir","--output","--model","--reference","--figures-only","--refit")
 unknown <- args[startsWith(args,"--") & !args %in% allowed]
 if (length(unknown)) stop("Unknown option: ",paste(unknown,collapse=", "))
 script_path <- sub("^--file=", "", grep("^--file=", commandArgs(), value=TRUE)[1])
@@ -28,7 +28,10 @@ if (!"--figures-only" %in% args) {
   data_dir <- get_arg("--data-dir")
   if (is.null(data_dir)) stop(usage)
   model <- get_arg("--model")
-  mode <- if (is.null(model)) "train" else "prepare"
+  if ("--refit" %in% args && !is.null(model)) stop("Use --refit or --model, not both.")
+  if (is.null(model) && !"--refit" %in% args)
+    model <- file.path(script_dir,"weights","core_model.json")
+  mode <- if ("--refit" %in% args) "train" else "prepare"
   python_args <- c(file.path(script_dir,"model.py"),mode,"--data-dir",data_dir,"--output",output)
   if (!is.null(model)) python_args <- c(python_args,"--model",model)
   reference <- get_arg("--reference")
@@ -39,8 +42,5 @@ if (!"--figures-only" %in% args) {
 reticulate::use_python(python, required=TRUE)
 module <- reticulate::import_from_path("model",path=script_dir,convert=FALSE)
 context <- module$load_plot_inputs(output)
-for (panel in c("i","j","k")) source(file.path(script_dir,paste0("figure2",panel,".R")))
-plot_figure2i(file.path(output,"test_predictions.csv"),file.path(output,"figure2i.pdf"))
-plot_figure2j(context,file.path(output,"figure2j.pdf"))
-plot_figure2k(context,file.path(output,"figure2k.pdf"))
+source(file.path(script_dir,"Figure2_model_plots.R"))
 cat("Wrote Figure 2i, 2j and 2k to ",output,"\n")
