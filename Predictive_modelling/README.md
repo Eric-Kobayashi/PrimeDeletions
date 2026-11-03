@@ -4,4 +4,4 @@ With [Pixi](https://pixi.sh) installed, run from this directory:
 pixi run --locked reproduce --data-dir data
 ```
 
-Uses the included data and saved weights; writes analysis results and Figure 2i–k PDFs to `output/`.
+Uses the included data and saved weights. Writes Figure 2i–k to `output/` and the five core-feature-versus-LFC scatterplots with fits for <10 kb, all deletions and >100 kb to `output/core_features/`.
